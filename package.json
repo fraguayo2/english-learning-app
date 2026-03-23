@@ -1,0 +1,27 @@
+{
+  "name": "english-learning-app",
+  "version": "1.0.0",
+  "description": "Mobile-optimized English learning platform with vocabulary flashcards and irregular verb practice",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "npx http-server -p 8000"
+  },
+  "keywords": [
+    "english",
+    "learning",
+    "education",
+    "vocabulary",
+    "flashcards",
+    "language",
+    "mobile",
+    "pwa"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/english-learning-app.git"
+  },
+  "homepage": "https://yourusername.github.io/english-learning-app"
+}

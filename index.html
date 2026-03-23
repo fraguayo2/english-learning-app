@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>My English Study Plan 📱</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 85px;
+            z-index: 99;
+        }
+
+        .nav-tab {
+            flex: 1;
+            min-width: 100px;
+            padding: 15px 10px;
+            text-align: center;
+            background: white;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .content {
+            padding: 15px;
+            padding-bottom: 80px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: #333;
+            font-size: 1.1em;
+            margin: 15px 0 10px 0;
+        }
+
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 20px 0;
+        }
+
+        .flashcard {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            cursor: pointer;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            color: white;
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard h3 {
+            font-size: 2em;
+            color: white;
+            margin: 0;
+            text-align: center;
+        }
+
+        .flashcard p {
+            font-size: 1em;
+            margin-top: 15px;
+            text-align: center;
+            opacity: 0.9;
+        }
+
+        .phonetic {
+            font-style: italic;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin: 8px 0;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #606c88 0%, #3f4c6b 100%);
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 14px;
+            width: auto;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s;
+        }
+
+        .verb-list {
+            list-style: none;
+        }
+
+        .verb-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .verb-item strong {
+            color: #667eea;
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .verb-forms {
+            font-size: 0.95em;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-box h3 {
+            font-size: 2em;
+            color: white;
+            margin: 5px 0;
+        }
+
+        .stat-box p {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            background: white;
+            padding: 15px;
+            margin: 8px 0;
+            border-radius: 10px;
+            border-left: 4px solid #ddd;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checklist li.completed {
+            border-left-color: #38ef7d;
+            background: #f0fdf4;
+        }
+
+        .checklist li input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .word-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .word-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .word-card strong {
+            color: #667eea;
+            font-size: 1.1em;
+            display: block;
+        }
+
+        .word-card .phonetic {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .word-card .meaning {
+            color: #555;
+            margin: 5px 0;
+        }
+
+        .word-card .example {
+            color: #777;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        .exercise-area {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+
+        .exercise-area textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .counter {
+            text-align: center;
+            font-size: 1.2em;
+            color: #667eea;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px 15px;
+            cursor: pointer;
+        }
+
+        .bottom-nav button.active {
+            color: #667eea;
+        }
+
+        .bottom-nav button span {
+            font-size: 24px;
+            margin-bottom: 3px;
+        }
+
+        @media (max-width: 360px) {
+            .nav-tab {
+                font-size: 12px;
+                padding: 12px 8px;
+            }
+            
+            .flashcard h3 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>📚 My English Study Plan</h1>
+            <p>Week <span id="currentWeek">1</span> • Day <span id="currentDay">1</span></p>
+        </div>
+
+        <div class="content">
+            <!-- TODAY SECTION -->
+            <div id="today" class="section active">
+                <div class="card">
+                    <h2>🎯 Today's Goals</h2>
+                    <div id="todayDate"></div>
+                    
+                    <div class="stats-grid" style="margin: 20px 0;">
+                        <div class="stat-box">
+                            <h3 id="wordsToday">0</h3>
+                            <p>Words learned</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3 id="verbsToday">0</h3>
+                            <p>Verbs practiced</p>
+                        </div>
+                    </div>
+
+                    <h3>Today's Checklist:</h3>
+                    <ul class="checklist" id="dailyChecklist">
+                        <li onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span>Learn 15 new vocabulary words</span>
+                        </li>
+                        <li onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span>Practice 5 irregular verbs</span>
+                        </li>
+                        <li onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span>Write 3 sentences using new words</span>
+                        </li>
+                        <li onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span>Review yesterday's vocabulary</span>
+                        </li>
+                    </ul>
+
+                    <button class="btn" onclick="showSection('vocabulary')">Start Vocabulary Practice 📚</button>
+                    <button class="btn btn-success" onclick="showSection('verbs')">Practice Irregular Verbs ✍️</button>
+                </div>
+
+                <div class="card">
+                    <h2>📅 This Week's Focus</h2>
+                    <div class="alert alert-info">
+                        <strong>Week 1 Theme: Daily Routines & Home</strong><br>
+                        Target: 15 new words + 5 irregular verbs
+                    </div>
+                </div>
+            </div>
+
+            <!-- VOCABULARY SECTION -->
+            <div id="vocabulary" class="section">
+                <div class="card">
+                    <h2>📚 Vocabulary Flashcards</h2>
+                    <p class="counter">Card <span id="cardNumber">1</span> of <span id="totalCards">15</span></p>
+                    
+                    <div class="flashcard-container">
+                        <div class="flashcard" id="flashcard" onclick="flipCard()">
+                            <div class="flashcard-front">
+                                <h3 id="wordFront">Loading...</h3>
+                                <p class="phonetic" id="wordPhonetic"></p>
+                                <p style="font-size: 0.9em; margin-top: 20px;">Tap to see meaning</p>
+                            </div>
+                            <div class="flashcard-back">
+                                <h3 id="wordMeaning"></h3>
+                                <p id="wordExample"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="vocabProgress" style="width: 0%"></div>
+                    </div>
+
+                    <button class="btn btn-success" onclick="markWordLearned()">I know this word ✓</button>
+                    <button class="btn" onclick="nextCard()">Next Card →</button>
+                    <button class="btn btn-secondary" onclick="prevCard()">← Previous</button>
+                </div>
+
+                <div class="card">
+                    <h2>📝 Week 1: Daily Routines</h2>
+                    <div class="word-grid" id="weekVocabulary"></div>
+                </div>
+
+                <div class="card">
+                    <h2>✍️ Practice Exercise</h2>
+                    <div class="exercise-area">
+                        <p><strong>Write 3 sentences using today's vocabulary:</strong></p>
+                        <textarea id="practiceText" placeholder="Example: I wake up at 7 AM every day..."></textarea>
+                        <button class="btn" onclick="savePractice()">Save My Practice 💾</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IRREGULAR VERBS SECTION -->
+            <div id="verbs" class="section">
+                <div class="card">
+                    <h2>🔤 Irregular Verbs - Week 1</h2>
+                    <div class="alert alert-info">
+                        <strong>This week's goal:</strong> Master the 5 most common irregular verbs
+                    </div>
+
+                    <ul class="verb-list" id="verbList"></ul>
+                </div>
+
+                <div class="card">
+                    <h2>💪 Verb Practice</h2>
+                    <div class="flashcard-container">
+                        <div class="flashcard" id="verbCard" onclick="flipVerbCard()">
+                            <div class="flashcard-front">
+                                <h3 id="verbInfinitive">be</h3>
+                                <p style="font-size: 0.9em; margin-top: 20px;">Tap to see all forms</p>
+                            </div>
+                            <div class="flashcard-back">
+                                <h3 id="verbPast"></h3>
+                                <p id="verbParticiple"></p>
+                                <p id="verbExample"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="nextVerb()">Next Verb →</button>
+                </div>
+
+                <div class="card">
+                    <h2>✍️ Write Sentences</h2>
+                    <div class="exercise-area">
+                        <p><strong>Create sentences using these verbs in past tense:</strong></p>
+                        <textarea id="verbPractice" placeholder="Example: Yesterday I went to the gym..."></textarea>
+                        <button class="btn" onclick="saveVerbPractice()">Save Practice 💾</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROGRESS SECTION -->
+            <div id="progress" class="section">
+                <div class="card">
+                    <h2>📈 Your Progress</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <h3 id="totalWordsLearned">0</h3>
+                            <p>Total Words</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3 id="totalVerbsLearned">0</h3>
+                            <p>Verbs Mastered</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3 id="daysStudied">1</h3>
+                            <p>Days Studied</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3 id="currentStreak">1</h3>
+                            <p>Day Streak 🔥</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>📅 Weekly Progress</h2>
+                    <div id="weeklyProgress"></div>
+                </div>
+
+                <div class="card">
+                    <h2>🎯 Goals for Week 1</h2>
+                    <ul class="checklist">
+                        <li><input type="checkbox"> <span>Learn 15 words: Daily Routines</span></li>
+                        <li><input type="checkbox"> <span>Master 5 irregular verbs</span></li>
+                        <li><input type="checkbox"> <span>Practice 10 regular verbs</span></li>
+                        <li><input type="checkbox"> <span>Write 15 practice sentences</span></li>
+                        <li><input type="checkbox"> <span>Study every day this week</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PLAN SECTION -->
+            <div id="plan" class="section">
+                <div class="card">
+                    <h2>📋 8-Week Study Plan</h2>
+                    
+                    <h3>Week 1: Daily Routines & Home</h3>
+                    <ul style="line-height: 2; margin-left: 20px;">
+                        <li>15 vocabulary words</li>
+                        <li>5 irregular verbs (be, have, do, go, get)</li>
+                        <li>Present Simple review</li>
+                    </ul>
+
+                    <h3>Week 2: Food & Restaurants</h3>
+                    <ul style="line-height: 2; margin-left: 20px;">
+                        <li>15 new words (food vocabulary)</li>
+                        <li>5 more irregular verbs</li>
+                        <li>Past Simple practice</li>
+                    </ul>
+
+                    <h3>Weeks 3-8 Coming Soon...</h3>
+                    <div class="alert alert-info">
+                        Focus on mastering Week 1 first! New content unlocks as you progress.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>📱 How to Use This App</h2>
+                    <ol style="line-height: 2; margin-left: 20px;">
+                        <li>Visit "Today" tab every morning</li>
+                        <li>Complete your daily checklist</li>
+                        <li>Practice with flashcards (20 min)</li>
+                        <li>Write practice sentences</li>
+                        <li>Track your progress</li>
+                        <li>Study consistently every day!</li>
+                    </ol>
+
+                    <div class="alert alert-success">
+                        <strong>💡 Pro Tip:</strong> Add this page to your home screen for quick access!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <button onclick="showSection('today')" class="active">
+                <span>🎯</span>
+                Today
+            </button>
+            <button onclick="showSection('vocabulary')">
+                <span>📚</span>
+                Vocab
+            </button>
+            <button onclick="showSection('verbs')">
+                <span>✍️</span>
+                Verbs
+            </button>
+            <button onclick="showSection('progress')">
+                <span>📈</span>
+                Progress
+            </button>
+            <button onclick="showSection('plan')">
+                <span>📋</span>
+                Plan
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ========== DATA ==========
+        const week1Vocabulary = [
+            { word: "wake up", phonetic: "/weɪk ʌp/", meaning: "despertarse", example: "I wake up at 7 AM every day.", exampleES: "Me despierto a las 7 AM todos los días." },
+            { word: "get up", phonetic: "/ɡet ʌp/", meaning: "levantarse de la cama", example: "I get up as soon as my alarm rings.", exampleES: "Me levanto tan pronto como suena mi alarma." },
+            { word: "brush", phonetic: "/brʌʃ/", meaning: "cepillar", example: "I brush my teeth after breakfast.", exampleES: "Me cepillo los dientes después del desayuno." },
+            { word: "shower", phonetic: "/ˈʃaʊər/", meaning: "ducha / ducharse", example: "I take a shower every morning.", exampleES: "Me ducho todas las mañanas." },
+            { word: "breakfast", phonetic: "/ˈbrekfəst/", meaning: "desayuno", example: "I have breakfast at 8 AM.", exampleES: "Desayuno a las 8 AM." },
+            { word: "commute", phonetic: "/kəˈmjuːt/", meaning: "trasladarse al trabajo", example: "My commute takes 30 minutes.", exampleES: "Mi traslado al trabajo toma 30 minutos." },
+            { word: "lunch", phonetic: "/lʌntʃ/", meaning: "almuerzo", example: "I eat lunch at noon.", exampleES: "Almuerzo al mediodía." },
+            { word: "break", phonetic: "/breɪk/", meaning: "descanso", example: "I take a break at 3 PM.", exampleES: "Tomo un descanso a las 3 PM." },
+            { word: "dinner", phonetic: "/ˈdɪnər/", meaning: "cena", example: "We have dinner together at 7 PM.", exampleES: "Cenamos juntos a las 7 PM." },
+            { word: "relax", phonetic: "/rɪˈlæks/", meaning: "relajarse", example: "I relax by watching TV.", exampleES: "Me relajo viendo televisión." },
+            { word: "homework", phonetic: "/ˈhoʊmwɜːrk/", meaning: "tarea", example: "I do my homework after dinner.", exampleES: "Hago mi tarea después de cenar." },
+            { word: "tired", phonetic: "/taɪərd/", meaning: "cansado", example: "I feel tired after work.", exampleES: "Me siento cansado después del trabajo." },
+            { word: "early", phonetic: "/ˈɜːrli/", meaning: "temprano", example: "I wake up early on weekdays.", exampleES: "Me despierto temprano entre semana." },
+            { word: "late", phonetic: "/leɪt/", meaning: "tarde", example: "I stayed up late last night.", exampleES: "Me quedé despierto hasta tarde anoche." },
+            { word: "routine", phonetic: "/ruːˈtiːn/", meaning: "rutina", example: "My daily routine is very simple.", exampleES: "Mi rutina diaria es muy simple." }
+        ];
+
+        const week1Verbs = [
+            { infinitive: "be", past: "was/were", participle: "been", example: "I was tired yesterday.", exampleES: "Estaba cansado ayer." },
+            { infinitive: "have", past: "had", participle: "had", example: "I had breakfast at 8 AM.", exampleES: "Desayuné a las 8 AM." },
+            { infinitive: "do", past: "did", participle: "done", example: "I did my homework last night.", exampleES: "Hice mi tarea anoche." },
+            { infinitive: "go", past: "went", participle: "gone", example: "I went to the gym yesterday.", exampleES: "Fui al gimnasio ayer." },
+            { infinitive: "get", past: "got", participle: "got/gotten", example: "I got up early today.", exampleES: "Me levanté temprano hoy." }
+        ];
+
+        // ========== STATE ==========
+        let currentCardIndex = 0;
+        let currentVerbIndex = 0;
+        let progress = {
+            wordsLearned: 0,
+            verbsLearned: 0,
+            daysStudied: 1,
+            streak: 1,
+            todayWords: 0,
+            todayVerbs: 0
+        };
+
+        // ========== INITIALIZE ==========
+        window.onload = function() {
+            loadProgress();
+            updateDisplay();
+            updateDate();
+            loadVocabularyList();
+            loadVerbList();
+            updateCard();
+            updateVerbCard();
+        };
+
+        function updateDate() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date().toLocaleDateString('en-US', options);
+            document.getElementById('todayDate').innerHTML = `<p style="color: #666; margin: 10px 0;">${today}</p>`;
+        }
+
+        // ========== NAVIGATION ==========
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            window.scrollTo(0, 0);
+        }
+
+        // ========== FLASHCARDS ==========
+        function updateCard() {
+            const card = week1Vocabulary[currentCardIndex];
+            document.getElementById('wordFront').textContent = card.word;
+            document.getElementById('wordPhonetic').textContent = card.phonetic;
+            document.getElementById('wordMeaning').textContent = card.meaning;
+            document.getElementById('wordExample').innerHTML = `<strong>Example:</strong><br>"${card.example}"<br><em style="font-size: 0.9em; opacity: 0.9;">${card.exampleES}</em>`;
+            document.getElementById('cardNumber').textContent = currentCardIndex + 1;
+            document.getElementById('totalCards').textContent = week1Vocabulary.length;
+            
+            document.getElementById('flashcard').classList.remove('flipped');
+            updateVocabProgress();
+        }
+
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % week1Vocabulary.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentCardIndex = (currentCardIndex - 1 + week1Vocabulary.length) % week1Vocabulary.length;
+            updateCard();
+        }
+
+        function markWordLearned() {
+            progress.wordsLearned++;
+            progress.todayWords++;
+            updateDisplay();
+            saveProgress();
+            nextCard();
+        }
+
+        function updateVocabProgress() {
+            const percent = ((currentCardIndex + 1) / week1Vocabulary.length) * 100;
+            document.getElementById('vocabProgress').style.width = percent + '%';
+        }
+
+        function loadVocabularyList() {
+            const container = document.getElementById('weekVocabulary');
+            container.innerHTML = '';
+            
+            week1Vocabulary.forEach((word, index) => {
+                const div = document.createElement('div');
+                div.className = 'word-card';
+                div.innerHTML = `
+                    <strong>${word.word}</strong> <span class="phonetic">${word.phonetic}</span>
+                    <div class="meaning">${word.meaning}</div>
+                    <div class="example">"${word.example}"<br><em style="font-size: 0.9em; color: #999;">${word.exampleES}</em></div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ========== VERBS ==========
+        function updateVerbCard() {
+            const verb = week1Verbs[currentVerbIndex];
+            document.getElementById('verbInfinitive').textContent = verb.infinitive;
+            document.getElementById('verbPast').textContent = `Past: ${verb.past}`;
+            document.getElementById('verbParticiple').textContent = `Past Participle: ${verb.participle}`;
+            document.getElementById('verbExample').innerHTML = `<strong>Example:</strong><br>"${verb.example}"<br><em style="font-size: 0.9em; opacity: 0.9;">${verb.exampleES}</em>`;
+            
+            document.getElementById('verbCard').classList.remove('flipped');
+        }
+
+        function flipVerbCard() {
+            document.getElementById('verbCard').classList.toggle('flipped');
+        }
+
+        function nextVerb() {
+            currentVerbIndex = (currentVerbIndex + 1) % week1Verbs.length;
+            progress.verbsLearned++;
+            progress.todayVerbs++;
+            updateDisplay();
+            saveProgress();
+            updateVerbCard();
+        }
+
+        function loadVerbList() {
+            const container = document.getElementById('verbList');
+            container.innerHTML = '';
+            
+            week1Verbs.forEach(verb => {
+                const li = document.createElement('li');
+                li.className = 'verb-item';
+                li.innerHTML = `
+                    <strong>${verb.infinitive}</strong>
+                    <div class="verb-forms">
+                        Past Simple: <strong>${verb.past}</strong> | 
+                        Past Participle: <strong>${verb.participle}</strong>
+                    </div>
+                    <div style="color: #555; margin-top: 8px;">"${verb.example}"</div>
+                    <div style="color: #999; font-size: 0.9em; font-style: italic; margin-top: 3px;">${verb.exampleES}</div>
+                `;
+                container.appendChild(li);
+            });
+        }
+
+        // ========== PRACTICE ==========
+        function savePractice() {
+            const text = document.getElementById('practiceText').value;
+            if (text.trim()) {
+                localStorage.setItem('vocabPractice_' + new Date().toDateString(), text);
+                alert('✅ Practice saved! Great job!');
+            }
+        }
+
+        function saveVerbPractice() {
+            const text = document.getElementById('verbPractice').value;
+            if (text.trim()) {
+                localStorage.setItem('verbPractice_' + new Date().toDateString(), text);
+                alert('✅ Verb practice saved! Excellent work!');
+            }
+        }
+
+        // ========== CHECKLIST ==========
+        function toggleCheck(element) {
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            if (checkbox.checked) {
+                element.classList.add('completed');
+            } else {
+                element.classList.remove('completed');
+            }
+        }
+
+        // ========== PROGRESS ==========
+        function updateDisplay() {
+            document.getElementById('wordsToday').textContent = progress.todayWords;
+            document.getElementById('verbsToday').textContent = progress.todayVerbs;
+            document.getElementById('totalWordsLearned').textContent = progress.wordsLearned;
+            document.getElementById('totalVerbsLearned').textContent = progress.verbsLearned;
+            document.getElementById('daysStudied').textContent = progress.daysStudied;
+            document.getElementById('currentStreak').textContent = progress.streak;
+        }
+
+        function saveProgress() {
+            localStorage.setItem('englishProgress', JSON.stringify(progress));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('englishProgress');
+            if (saved) {
+                progress = JSON.parse(saved);
+            }
+        }
+    </script>
+</body>
+</html>
