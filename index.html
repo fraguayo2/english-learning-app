@@ -494,9 +494,13 @@
 
                 <div class="card">
                     <h2>📅 This Week's Focus</h2>
-                    <div class="alert alert-info">
+                    <div class="alert alert-info" id="weekThemeInfo">
                         <strong>Week 1 Theme: Daily Routines & Home</strong><br>
                         Target: 15 new words + 5 irregular verbs
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="btn btn-secondary btn-small" onclick="changeWeek(-1)" id="prevWeekBtn" disabled>← Previous Week</button>
+                        <button class="btn btn-small" onclick="changeWeek(1)" id="nextWeekBtn">Next Week →</button>
                     </div>
                 </div>
             </div>
@@ -531,7 +535,7 @@
                 </div>
 
                 <div class="card">
-                    <h2>📝 Week 1: Daily Routines</h2>
+                    <h2 id="vocabListTitle">📝 Week 1: Daily Routines</h2>
                     <div class="word-grid" id="weekVocabulary"></div>
                 </div>
 
@@ -539,8 +543,10 @@
                     <h2>✍️ Practice Exercise</h2>
                     <div class="exercise-area">
                         <p><strong>Write 3 sentences using today's vocabulary:</strong></p>
-                        <textarea id="practiceText" placeholder="Example: I wake up at 7 AM every day..."></textarea>
-                        <button class="btn" onclick="savePractice()">Save My Practice 💾</button>
+                        <p style="font-size: 0.85em; color: #888; margin-bottom: 10px;">Write one sentence per line. The app will check your sentences!</p>
+                        <textarea id="practiceText" placeholder="Example: I wake up at 7 AM every day.&#10;I have breakfast before work.&#10;My routine is very simple."></textarea>
+                        <button class="btn" onclick="checkAndSavePractice()">Check & Save My Practice ✓</button>
+                        <div id="vocabFeedback" style="margin-top: 15px;"></div>
                     </div>
                 </div>
             </div>
@@ -579,8 +585,10 @@
                     <h2>✍️ Write Sentences</h2>
                     <div class="exercise-area">
                         <p><strong>Create sentences using these verbs in past tense:</strong></p>
-                        <textarea id="verbPractice" placeholder="Example: Yesterday I went to the gym..."></textarea>
-                        <button class="btn" onclick="saveVerbPractice()">Save Practice 💾</button>
+                        <p style="font-size: 0.85em; color: #888; margin-bottom: 10px;">Write one sentence per line. The app will check your sentences!</p>
+                        <textarea id="verbPractice" placeholder="Example: Yesterday I went to the gym.&#10;I had breakfast at 8 AM.&#10;She was very tired last night."></textarea>
+                        <button class="btn" onclick="checkAndSaveVerbPractice()">Check & Save Practice ✓</button>
+                        <div id="verbFeedback" style="margin-top: 15px;"></div>
                     </div>
                 </div>
             </div>
@@ -646,9 +654,23 @@
                         <li>Past Simple practice</li>
                     </ul>
 
-                    <h3>Weeks 3-8 Coming Soon...</h3>
+                    <h3>Week 3: Travel & Transportation</h3>
+                    <ul style="line-height: 2; margin-left: 20px;">
+                        <li>15 new words (travel vocabulary)</li>
+                        <li>5 more irregular verbs (fly, drive, take, leave, come)</li>
+                        <li>Future tense practice</li>
+                    </ul>
+
+                    <h3>Week 4: Work & Office</h3>
+                    <ul style="line-height: 2; margin-left: 20px;">
+                        <li>15 new words (workplace vocabulary)</li>
+                        <li>5 more irregular verbs (write, speak, send, think, know)</li>
+                        <li>Professional communication</li>
+                    </ul>
+
+                    <h3>Weeks 5-8 Coming Soon...</h3>
                     <div class="alert alert-info">
-                        Focus on mastering Week 1 first! New content unlocks as you progress.
+                        Complete weeks 1-4 first! New content unlocks as you progress.
                     </div>
                 </div>
 
@@ -696,31 +718,132 @@
 
     <script>
         // ========== DATA ==========
-        const week1Vocabulary = [
-            { word: "wake up", phonetic: "/weɪk ʌp/", meaning: "despertarse", example: "I wake up at 7 AM every day.", exampleES: "Me despierto a las 7 AM todos los días." },
-            { word: "get up", phonetic: "/ɡet ʌp/", meaning: "levantarse de la cama", example: "I get up as soon as my alarm rings.", exampleES: "Me levanto tan pronto como suena mi alarma." },
-            { word: "brush", phonetic: "/brʌʃ/", meaning: "cepillar", example: "I brush my teeth after breakfast.", exampleES: "Me cepillo los dientes después del desayuno." },
-            { word: "shower", phonetic: "/ˈʃaʊər/", meaning: "ducha / ducharse", example: "I take a shower every morning.", exampleES: "Me ducho todas las mañanas." },
-            { word: "breakfast", phonetic: "/ˈbrekfəst/", meaning: "desayuno", example: "I have breakfast at 8 AM.", exampleES: "Desayuno a las 8 AM." },
-            { word: "commute", phonetic: "/kəˈmjuːt/", meaning: "trasladarse al trabajo", example: "My commute takes 30 minutes.", exampleES: "Mi traslado al trabajo toma 30 minutos." },
-            { word: "lunch", phonetic: "/lʌntʃ/", meaning: "almuerzo", example: "I eat lunch at noon.", exampleES: "Almuerzo al mediodía." },
-            { word: "break", phonetic: "/breɪk/", meaning: "descanso", example: "I take a break at 3 PM.", exampleES: "Tomo un descanso a las 3 PM." },
-            { word: "dinner", phonetic: "/ˈdɪnər/", meaning: "cena", example: "We have dinner together at 7 PM.", exampleES: "Cenamos juntos a las 7 PM." },
-            { word: "relax", phonetic: "/rɪˈlæks/", meaning: "relajarse", example: "I relax by watching TV.", exampleES: "Me relajo viendo televisión." },
-            { word: "homework", phonetic: "/ˈhoʊmwɜːrk/", meaning: "tarea", example: "I do my homework after dinner.", exampleES: "Hago mi tarea después de cenar." },
-            { word: "tired", phonetic: "/taɪərd/", meaning: "cansado", example: "I feel tired after work.", exampleES: "Me siento cansado después del trabajo." },
-            { word: "early", phonetic: "/ˈɜːrli/", meaning: "temprano", example: "I wake up early on weekdays.", exampleES: "Me despierto temprano entre semana." },
-            { word: "late", phonetic: "/leɪt/", meaning: "tarde", example: "I stayed up late last night.", exampleES: "Me quedé despierto hasta tarde anoche." },
-            { word: "routine", phonetic: "/ruːˈtiːn/", meaning: "rutina", example: "My daily routine is very simple.", exampleES: "Mi rutina diaria es muy simple." }
+        const allWeeksVocabulary = [
+            // Week 1: Daily Routines & Home
+            [
+                { word: "wake up", phonetic: "/weɪk ʌp/", meaning: "despertarse", example: "I wake up at 7 AM every day.", exampleES: "Me despierto a las 7 AM todos los días." },
+                { word: "get up", phonetic: "/ɡet ʌp/", meaning: "levantarse de la cama", example: "I get up as soon as my alarm rings.", exampleES: "Me levanto tan pronto como suena mi alarma." },
+                { word: "brush", phonetic: "/brʌʃ/", meaning: "cepillar", example: "I brush my teeth after breakfast.", exampleES: "Me cepillo los dientes después del desayuno." },
+                { word: "shower", phonetic: "/ˈʃaʊər/", meaning: "ducha / ducharse", example: "I take a shower every morning.", exampleES: "Me ducho todas las mañanas." },
+                { word: "breakfast", phonetic: "/ˈbrekfəst/", meaning: "desayuno", example: "I have breakfast at 8 AM.", exampleES: "Desayuno a las 8 AM." },
+                { word: "commute", phonetic: "/kəˈmjuːt/", meaning: "trasladarse al trabajo", example: "My commute takes 30 minutes.", exampleES: "Mi traslado al trabajo toma 30 minutos." },
+                { word: "lunch", phonetic: "/lʌntʃ/", meaning: "almuerzo", example: "I eat lunch at noon.", exampleES: "Almuerzo al mediodía." },
+                { word: "break", phonetic: "/breɪk/", meaning: "descanso", example: "I take a break at 3 PM.", exampleES: "Tomo un descanso a las 3 PM." },
+                { word: "dinner", phonetic: "/ˈdɪnər/", meaning: "cena", example: "We have dinner together at 7 PM.", exampleES: "Cenamos juntos a las 7 PM." },
+                { word: "relax", phonetic: "/rɪˈlæks/", meaning: "relajarse", example: "I relax by watching TV.", exampleES: "Me relajo viendo televisión." },
+                { word: "homework", phonetic: "/ˈhoʊmwɜːrk/", meaning: "tarea", example: "I do my homework after dinner.", exampleES: "Hago mi tarea después de cenar." },
+                { word: "tired", phonetic: "/taɪərd/", meaning: "cansado", example: "I feel tired after work.", exampleES: "Me siento cansado después del trabajo." },
+                { word: "early", phonetic: "/ˈɜːrli/", meaning: "temprano", example: "I wake up early on weekdays.", exampleES: "Me despierto temprano entre semana." },
+                { word: "late", phonetic: "/leɪt/", meaning: "tarde", example: "I stayed up late last night.", exampleES: "Me quedé despierto hasta tarde anoche." },
+                { word: "routine", phonetic: "/ruːˈtiːn/", meaning: "rutina", example: "My daily routine is very simple.", exampleES: "Mi rutina diaria es muy simple." }
+            ],
+            // Week 2: Food & Restaurants
+            [
+                { word: "order", phonetic: "/ˈɔːrdər/", meaning: "ordenar / pedir", example: "I'd like to order a coffee, please.", exampleES: "Me gustaría pedir un café, por favor." },
+                { word: "meal", phonetic: "/miːl/", meaning: "comida (tiempo de)", example: "Dinner is my favorite meal of the day.", exampleES: "La cena es mi comida favorita del día." },
+                { word: "recipe", phonetic: "/ˈresɪpi/", meaning: "receta", example: "I found a great recipe for pasta.", exampleES: "Encontré una gran receta de pasta." },
+                { word: "ingredients", phonetic: "/ɪnˈɡriːdiənts/", meaning: "ingredientes", example: "We need fresh ingredients for the salad.", exampleES: "Necesitamos ingredientes frescos para la ensalada." },
+                { word: "appetizer", phonetic: "/ˈæpɪtaɪzər/", meaning: "entrada / aperitivo", example: "We shared an appetizer before the main course.", exampleES: "Compartimos una entrada antes del plato principal." },
+                { word: "beverage", phonetic: "/ˈbevərɪdʒ/", meaning: "bebida", example: "What beverage would you like?", exampleES: "¿Qué bebida le gustaría?" },
+                { word: "bill", phonetic: "/bɪl/", meaning: "cuenta (restaurante)", example: "Can I have the bill, please?", exampleES: "¿Me puede traer la cuenta, por favor?" },
+                { word: "tip", phonetic: "/tɪp/", meaning: "propina", example: "I always leave a 15% tip.", exampleES: "Siempre dejo un 15% de propina." },
+                { word: "reservation", phonetic: "/ˌrezərˈveɪʃən/", meaning: "reservación", example: "I made a reservation for two.", exampleES: "Hice una reservación para dos." },
+                { word: "waiter", phonetic: "/ˈweɪtər/", meaning: "mesero", example: "The waiter was very friendly.", exampleES: "El mesero fue muy amable." },
+                { word: "delicious", phonetic: "/dɪˈlɪʃəs/", meaning: "delicioso", example: "This soup is delicious!", exampleES: "¡Esta sopa está deliciosa!" },
+                { word: "spicy", phonetic: "/ˈspaɪsi/", meaning: "picante", example: "I don't like spicy food.", exampleES: "No me gusta la comida picante." },
+                { word: "fresh", phonetic: "/freʃ/", meaning: "fresco", example: "The fish is very fresh today.", exampleES: "El pescado está muy fresco hoy." },
+                { word: "starving", phonetic: "/ˈstɑːrvɪŋ/", meaning: "muerto de hambre", example: "I'm starving! Let's eat now.", exampleES: "¡Estoy muerto de hambre! Comamos ya." },
+                { word: "chef", phonetic: "/ʃef/", meaning: "chef / cocinero", example: "The chef prepared a special dish.", exampleES: "El chef preparó un plato especial." }
+            ],
+            // Week 3: Travel & Transportation
+            [
+                { word: "flight", phonetic: "/flaɪt/", meaning: "vuelo", example: "My flight departs at 6 AM.", exampleES: "Mi vuelo sale a las 6 AM." },
+                { word: "luggage", phonetic: "/ˈlʌɡɪdʒ/", meaning: "equipaje", example: "I packed my luggage last night.", exampleES: "Empaqué mi equipaje anoche." },
+                { word: "boarding pass", phonetic: "/ˈbɔːrdɪŋ pæs/", meaning: "pase de abordar", example: "Please show your boarding pass.", exampleES: "Por favor muestre su pase de abordar." },
+                { word: "departure", phonetic: "/dɪˈpɑːrtʃər/", meaning: "salida / partida", example: "The departure is delayed by one hour.", exampleES: "La salida está retrasada una hora." },
+                { word: "arrival", phonetic: "/əˈraɪvəl/", meaning: "llegada", example: "Our arrival time is 3 PM.", exampleES: "Nuestra hora de llegada es a las 3 PM." },
+                { word: "passport", phonetic: "/ˈpæspɔːrt/", meaning: "pasaporte", example: "Don't forget your passport!", exampleES: "¡No olvides tu pasaporte!" },
+                { word: "customs", phonetic: "/ˈkʌstəmz/", meaning: "aduana", example: "We went through customs quickly.", exampleES: "Pasamos por la aduana rápidamente." },
+                { word: "terminal", phonetic: "/ˈtɜːrmɪnəl/", meaning: "terminal", example: "Gate 5 is in Terminal B.", exampleES: "La puerta 5 está en la Terminal B." },
+                { word: "delay", phonetic: "/dɪˈleɪ/", meaning: "retraso / demora", example: "There was a two-hour delay.", exampleES: "Hubo un retraso de dos horas." },
+                { word: "destination", phonetic: "/ˌdestɪˈneɪʃən/", meaning: "destino", example: "Our destination is New York.", exampleES: "Nuestro destino es Nueva York." },
+                { word: "round trip", phonetic: "/raʊnd trɪp/", meaning: "viaje redondo", example: "I bought a round trip ticket.", exampleES: "Compré un boleto de viaje redondo." },
+                { word: "gate", phonetic: "/ɡeɪt/", meaning: "puerta (aeropuerto)", example: "Please proceed to gate 12.", exampleES: "Por favor diríjase a la puerta 12." },
+                { word: "abroad", phonetic: "/əˈbrɔːd/", meaning: "en el extranjero", example: "I want to study abroad.", exampleES: "Quiero estudiar en el extranjero." },
+                { word: "suitcase", phonetic: "/ˈsuːtkeɪs/", meaning: "maleta", example: "My suitcase is too heavy.", exampleES: "Mi maleta está muy pesada." },
+                { word: "journey", phonetic: "/ˈdʒɜːrni/", meaning: "viaje / travesía", example: "The journey took eight hours.", exampleES: "El viaje tomó ocho horas." }
+            ],
+            // Week 4: Work & Office
+            [
+                { word: "meeting", phonetic: "/ˈmiːtɪŋ/", meaning: "reunión / junta", example: "We have a meeting at 10 AM.", exampleES: "Tenemos una reunión a las 10 AM." },
+                { word: "deadline", phonetic: "/ˈdedlaɪn/", meaning: "fecha límite", example: "The deadline is next Friday.", exampleES: "La fecha límite es el próximo viernes." },
+                { word: "colleague", phonetic: "/ˈkɑːliːɡ/", meaning: "colega / compañero de trabajo", example: "My colleague helped me with the project.", exampleES: "Mi colega me ayudó con el proyecto." },
+                { word: "salary", phonetic: "/ˈsæləri/", meaning: "salario / sueldo", example: "I received a salary increase.", exampleES: "Recibí un aumento de salario." },
+                { word: "overtime", phonetic: "/ˈoʊvərtaɪm/", meaning: "horas extra", example: "I worked overtime last week.", exampleES: "Trabajé horas extra la semana pasada." },
+                { word: "promote", phonetic: "/prəˈmoʊt/", meaning: "promover / ascender", example: "She was promoted to manager.", exampleES: "Ella fue promovida a gerente." },
+                { word: "schedule", phonetic: "/ˈskedʒuːl/", meaning: "horario / agenda", example: "Let me check my schedule.", exampleES: "Déjame revisar mi horario." },
+                { word: "task", phonetic: "/tæsk/", meaning: "tarea / labor", example: "I finished all my tasks today.", exampleES: "Terminé todas mis tareas hoy." },
+                { word: "report", phonetic: "/rɪˈpɔːrt/", meaning: "informe / reporte", example: "I need to write a report.", exampleES: "Necesito escribir un reporte." },
+                { word: "interview", phonetic: "/ˈɪntərvjuː/", meaning: "entrevista", example: "I have a job interview tomorrow.", exampleES: "Tengo una entrevista de trabajo mañana." },
+                { word: "hire", phonetic: "/haɪər/", meaning: "contratar", example: "They hired three new employees.", exampleES: "Contrataron tres nuevos empleados." },
+                { word: "resign", phonetic: "/rɪˈzaɪn/", meaning: "renunciar", example: "He resigned from his position.", exampleES: "Él renunció a su puesto." },
+                { word: "feedback", phonetic: "/ˈfiːdbæk/", meaning: "retroalimentación", example: "I received positive feedback.", exampleES: "Recibí retroalimentación positiva." },
+                { word: "project", phonetic: "/ˈprɑːdʒekt/", meaning: "proyecto", example: "The project is almost complete.", exampleES: "El proyecto está casi completo." },
+                { word: "experience", phonetic: "/ɪkˈspɪriəns/", meaning: "experiencia", example: "She has ten years of experience.", exampleES: "Ella tiene diez años de experiencia." }
+            ]
         ];
 
-        const week1Verbs = [
-            { infinitive: "be", past: "was/were", participle: "been", example: "I was tired yesterday.", exampleES: "Estaba cansado ayer." },
-            { infinitive: "have", past: "had", participle: "had", example: "I had breakfast at 8 AM.", exampleES: "Desayuné a las 8 AM." },
-            { infinitive: "do", past: "did", participle: "done", example: "I did my homework last night.", exampleES: "Hice mi tarea anoche." },
-            { infinitive: "go", past: "went", participle: "gone", example: "I went to the gym yesterday.", exampleES: "Fui al gimnasio ayer." },
-            { infinitive: "get", past: "got", participle: "got/gotten", example: "I got up early today.", exampleES: "Me levanté temprano hoy." }
+        const allWeeksVerbs = [
+            // Week 1
+            [
+                { infinitive: "be", past: "was/were", participle: "been", example: "I was tired yesterday.", exampleES: "Estaba cansado ayer." },
+                { infinitive: "have", past: "had", participle: "had", example: "I had breakfast at 8 AM.", exampleES: "Desayuné a las 8 AM." },
+                { infinitive: "do", past: "did", participle: "done", example: "I did my homework last night.", exampleES: "Hice mi tarea anoche." },
+                { infinitive: "go", past: "went", participle: "gone", example: "I went to the gym yesterday.", exampleES: "Fui al gimnasio ayer." },
+                { infinitive: "get", past: "got", participle: "got/gotten", example: "I got up early today.", exampleES: "Me levanté temprano hoy." }
+            ],
+            // Week 2
+            [
+                { infinitive: "eat", past: "ate", participle: "eaten", example: "I ate sushi for dinner.", exampleES: "Comí sushi para cenar." },
+                { infinitive: "drink", past: "drank", participle: "drunk", example: "She drank a glass of water.", exampleES: "Ella bebió un vaso de agua." },
+                { infinitive: "make", past: "made", participle: "made", example: "I made a cake yesterday.", exampleES: "Hice un pastel ayer." },
+                { infinitive: "buy", past: "bought", participle: "bought", example: "We bought fresh vegetables.", exampleES: "Compramos verduras frescas." },
+                { infinitive: "bring", past: "brought", participle: "brought", example: "He brought dessert to the party.", exampleES: "Él trajo postre a la fiesta." }
+            ],
+            // Week 3
+            [
+                { infinitive: "fly", past: "flew", participle: "flown", example: "We flew to London last summer.", exampleES: "Volamos a Londres el verano pasado." },
+                { infinitive: "drive", past: "drove", participle: "driven", example: "She drove to the airport.", exampleES: "Ella manejó al aeropuerto." },
+                { infinitive: "take", past: "took", participle: "taken", example: "I took a taxi to the hotel.", exampleES: "Tomé un taxi al hotel." },
+                { infinitive: "leave", past: "left", participle: "left", example: "We left early in the morning.", exampleES: "Salimos temprano en la mañana." },
+                { infinitive: "come", past: "came", participle: "come", example: "They came from Brazil.", exampleES: "Ellos vinieron de Brasil." }
+            ],
+            // Week 4
+            [
+                { infinitive: "write", past: "wrote", participle: "written", example: "I wrote a report for my boss.", exampleES: "Escribí un reporte para mi jefe." },
+                { infinitive: "speak", past: "spoke", participle: "spoken", example: "She spoke at the meeting.", exampleES: "Ella habló en la reunión." },
+                { infinitive: "send", past: "sent", participle: "sent", example: "I sent the email this morning.", exampleES: "Envié el correo esta mañana." },
+                { infinitive: "think", past: "thought", participle: "thought", example: "I thought it was a good idea.", exampleES: "Pensé que era una buena idea." },
+                { infinitive: "know", past: "knew", participle: "known", example: "She knew the answer immediately.", exampleES: "Ella supo la respuesta inmediatamente." }
+            ]
         ];
+
+        const weekThemes = [
+            "Daily Routines & Home",
+            "Food & Restaurants",
+            "Travel & Transportation",
+            "Work & Office"
+        ];
+
+        let currentWeekIndex = 0;
+
+        function getCurrentVocabulary() {
+            return allWeeksVocabulary[currentWeekIndex];
+        }
+
+        function getCurrentVerbs() {
+            return allWeeksVerbs[currentWeekIndex];
+        }
 
         // ========== STATE ==========
         let currentCardIndex = 0;
@@ -739,6 +862,7 @@
             loadProgress();
             updateDisplay();
             updateDate();
+            updateWeekDisplay();
             loadVocabularyList();
             loadVerbList();
             updateCard();
@@ -762,16 +886,45 @@
             window.scrollTo(0, 0);
         }
 
+        // ========== WEEK NAVIGATION ==========
+        function changeWeek(direction) {
+            const newIndex = currentWeekIndex + direction;
+            if (newIndex >= 0 && newIndex < allWeeksVocabulary.length) {
+                currentWeekIndex = newIndex;
+                currentCardIndex = 0;
+                currentVerbIndex = 0;
+                updateWeekDisplay();
+                updateCard();
+                updateVerbCard();
+                loadVocabularyList();
+                loadVerbList();
+                document.getElementById('vocabFeedback').innerHTML = '';
+                document.getElementById('verbFeedback').innerHTML = '';
+                document.getElementById('practiceText').value = '';
+                document.getElementById('verbPractice').value = '';
+            }
+        }
+
+        function updateWeekDisplay() {
+            const weekNum = currentWeekIndex + 1;
+            document.getElementById('currentWeek').textContent = weekNum;
+            document.getElementById('weekThemeInfo').innerHTML = `<strong>Week ${weekNum} Theme: ${weekThemes[currentWeekIndex]}</strong><br>Target: 15 new words + 5 irregular verbs`;
+            document.getElementById('vocabListTitle').textContent = `📝 Week ${weekNum}: ${weekThemes[currentWeekIndex]}`;
+            document.getElementById('prevWeekBtn').disabled = currentWeekIndex === 0;
+            document.getElementById('nextWeekBtn').disabled = currentWeekIndex === allWeeksVocabulary.length - 1;
+        }
+
         // ========== FLASHCARDS ==========
         function updateCard() {
-            const card = week1Vocabulary[currentCardIndex];
+            const vocab = getCurrentVocabulary();
+            const card = vocab[currentCardIndex];
             document.getElementById('wordFront').textContent = card.word;
             document.getElementById('wordPhonetic').textContent = card.phonetic;
             document.getElementById('wordMeaning').textContent = card.meaning;
             document.getElementById('wordExample').innerHTML = `<strong>Example:</strong><br>"${card.example}"<br><em style="font-size: 0.9em; opacity: 0.9;">${card.exampleES}</em>`;
             document.getElementById('cardNumber').textContent = currentCardIndex + 1;
-            document.getElementById('totalCards').textContent = week1Vocabulary.length;
-            
+            document.getElementById('totalCards').textContent = vocab.length;
+
             document.getElementById('flashcard').classList.remove('flipped');
             updateVocabProgress();
         }
@@ -781,12 +934,13 @@
         }
 
         function nextCard() {
-            currentCardIndex = (currentCardIndex + 1) % week1Vocabulary.length;
+            currentCardIndex = (currentCardIndex + 1) % getCurrentVocabulary().length;
             updateCard();
         }
 
         function prevCard() {
-            currentCardIndex = (currentCardIndex - 1 + week1Vocabulary.length) % week1Vocabulary.length;
+            const vocab = getCurrentVocabulary();
+            currentCardIndex = (currentCardIndex - 1 + vocab.length) % vocab.length;
             updateCard();
         }
 
@@ -799,15 +953,15 @@
         }
 
         function updateVocabProgress() {
-            const percent = ((currentCardIndex + 1) / week1Vocabulary.length) * 100;
+            const percent = ((currentCardIndex + 1) / getCurrentVocabulary().length) * 100;
             document.getElementById('vocabProgress').style.width = percent + '%';
         }
 
         function loadVocabularyList() {
             const container = document.getElementById('weekVocabulary');
             container.innerHTML = '';
-            
-            week1Vocabulary.forEach((word, index) => {
+
+            getCurrentVocabulary().forEach((word, index) => {
                 const div = document.createElement('div');
                 div.className = 'word-card';
                 div.innerHTML = `
@@ -821,7 +975,7 @@
 
         // ========== VERBS ==========
         function updateVerbCard() {
-            const verb = week1Verbs[currentVerbIndex];
+            const verb = getCurrentVerbs()[currentVerbIndex];
             document.getElementById('verbInfinitive').textContent = verb.infinitive;
             document.getElementById('verbPast').textContent = `Past: ${verb.past}`;
             document.getElementById('verbParticiple').textContent = `Past Participle: ${verb.participle}`;
@@ -835,7 +989,7 @@
         }
 
         function nextVerb() {
-            currentVerbIndex = (currentVerbIndex + 1) % week1Verbs.length;
+            currentVerbIndex = (currentVerbIndex + 1) % getCurrentVerbs().length;
             progress.verbsLearned++;
             progress.todayVerbs++;
             updateDisplay();
@@ -847,7 +1001,7 @@
             const container = document.getElementById('verbList');
             container.innerHTML = '';
             
-            week1Verbs.forEach(verb => {
+            getCurrentVerbs().forEach(verb => {
                 const li = document.createElement('li');
                 li.className = 'verb-item';
                 li.innerHTML = `
@@ -863,21 +1017,138 @@
             });
         }
 
-        // ========== PRACTICE ==========
-        function savePractice() {
-            const text = document.getElementById('practiceText').value;
-            if (text.trim()) {
-                localStorage.setItem('vocabPractice_' + new Date().toDateString(), text);
-                alert('✅ Practice saved! Great job!');
+        // ========== PRACTICE WITH REVIEW ==========
+        function checkSentence(sentence, targetWords) {
+            const result = { text: sentence, issues: [], good: [] };
+            const trimmed = sentence.trim();
+
+            if (!trimmed) return null;
+
+            // Check capitalization
+            if (trimmed[0] !== trimmed[0].toUpperCase()) {
+                result.issues.push("Start with a capital letter.");
+            } else {
+                result.good.push("Starts with capital letter.");
             }
+
+            // Check ending punctuation
+            if (!/[.!?]$/.test(trimmed)) {
+                result.issues.push("End with a period (.), question mark (?), or exclamation mark (!).");
+            } else {
+                result.good.push("Has proper punctuation.");
+            }
+
+            // Check minimum length
+            const wordCount = trimmed.split(/\s+/).length;
+            if (wordCount < 4) {
+                result.issues.push("Try writing a longer sentence (at least 4 words).");
+            }
+
+            // Check if uses any target words
+            const lowerSentence = trimmed.toLowerCase();
+            const usedWords = targetWords.filter(w => lowerSentence.includes(w.toLowerCase()));
+            if (usedWords.length > 0) {
+                result.good.push(`Uses vocabulary: ${usedWords.join(", ")}`);
+            } else {
+                result.issues.push(`Try to use at least one vocabulary word: ${targetWords.slice(0, 5).join(", ")}...`);
+            }
+
+            // Check common grammar issues
+            const commonErrors = [
+                { pattern: /\bi\b(?!\s*')/g, fix: "Remember: 'I' should always be capitalized." },
+                { pattern: /\bdont\b/g, fix: "Use \"don't\" instead of \"dont\"." },
+                { pattern: /\bdoesnt\b/g, fix: "Use \"doesn't\" instead of \"doesnt\"." },
+                { pattern: /\bcant\b/g, fix: "Use \"can't\" instead of \"cant\"." },
+                { pattern: /\bwont\b/g, fix: "Use \"won't\" instead of \"wont\"." },
+                { pattern: /\bim\b/gi, fix: "Use \"I'm\" instead of \"im\"." },
+                { pattern: /\bive\b/gi, fix: "Use \"I've\" instead of \"ive\"." },
+                { pattern: /\s{2,}/g, fix: "Remove extra spaces." },
+            ];
+
+            commonErrors.forEach(({ pattern, fix }) => {
+                if (pattern.test(trimmed)) {
+                    result.issues.push(fix);
+                }
+            });
+
+            if (result.issues.length === 0) {
+                result.good.push("Great sentence!");
+            }
+
+            return result;
         }
 
-        function saveVerbPractice() {
-            const text = document.getElementById('verbPractice').value;
-            if (text.trim()) {
-                localStorage.setItem('verbPractice_' + new Date().toDateString(), text);
-                alert('✅ Verb practice saved! Excellent work!');
+        function renderFeedback(results, containerId) {
+            const container = document.getElementById(containerId);
+            let html = '';
+
+            results.forEach((r, i) => {
+                if (!r) return;
+                const isGood = r.issues.length === 0;
+                const borderColor = isGood ? '#38ef7d' : '#ffc107';
+                const bgColor = isGood ? '#f0fdf4' : '#fff9e6';
+
+                html += `<div style="background: ${bgColor}; border-left: 4px solid ${borderColor}; border-radius: 8px; padding: 12px; margin: 8px 0;">`;
+                html += `<p style="font-weight: 600; margin-bottom: 5px;">${isGood ? '✅' : '📝'} Sentence ${i + 1}: "${r.text}"</p>`;
+
+                if (r.good.length > 0) {
+                    r.good.forEach(g => {
+                        html += `<p style="color: #155724; font-size: 0.9em;">✓ ${g}</p>`;
+                    });
+                }
+                if (r.issues.length > 0) {
+                    r.issues.forEach(issue => {
+                        html += `<p style="color: #856404; font-size: 0.9em;">⚠ ${issue}</p>`;
+                    });
+                }
+                html += '</div>';
+            });
+
+            if (results.filter(r => r).length === 0) {
+                html = '<div class="alert alert-warning">Please write at least one sentence!</div>';
+            } else {
+                const perfect = results.filter(r => r && r.issues.length === 0).length;
+                const total = results.filter(r => r).length;
+                if (perfect === total && total >= 3) {
+                    html += '<div class="alert alert-success" style="margin-top: 10px;"><strong>🎉 Excellent!</strong> All sentences look great! Practice saved.</div>';
+                } else if (total < 3) {
+                    html += '<div class="alert alert-warning" style="margin-top: 10px;">Try to write at least 3 sentences for better practice!</div>';
+                }
             }
+
+            container.innerHTML = html;
+        }
+
+        function checkAndSavePractice() {
+            const text = document.getElementById('practiceText').value;
+            if (!text.trim()) {
+                document.getElementById('vocabFeedback').innerHTML = '<div class="alert alert-warning">Write at least one sentence first!</div>';
+                return;
+            }
+            const sentences = text.split('\n').filter(s => s.trim());
+            const targetWords = getCurrentVocabulary().map(w => w.word);
+            const results = sentences.map(s => checkSentence(s, targetWords));
+            renderFeedback(results, 'vocabFeedback');
+            localStorage.setItem('vocabPractice_w' + (currentWeekIndex + 1) + '_' + new Date().toDateString(), text);
+        }
+
+        function checkAndSaveVerbPractice() {
+            const text = document.getElementById('verbPractice').value;
+            if (!text.trim()) {
+                document.getElementById('verbFeedback').innerHTML = '<div class="alert alert-warning">Write at least one sentence first!</div>';
+                return;
+            }
+            const sentences = text.split('\n').filter(s => s.trim());
+            const verbs = getCurrentVerbs();
+            const targetWords = [];
+            verbs.forEach(v => {
+                targetWords.push(v.infinitive, v.past, v.participle);
+            });
+            // Flatten was/were, got/gotten etc
+            const flatTargets = targetWords.flatMap(w => w.split('/'));
+            const results = sentences.map(s => checkSentence(s, flatTargets));
+            renderFeedback(results, 'verbFeedback');
+            localStorage.setItem('verbPractice_w' + (currentWeekIndex + 1) + '_' + new Date().toDateString(), text);
         }
 
         // ========== CHECKLIST ==========
